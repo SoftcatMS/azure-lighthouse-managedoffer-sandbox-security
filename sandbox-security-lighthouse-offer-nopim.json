@@ -1,0 +1,71 @@
+{
+ "$schema": "https://schema.management.azure.com/schemas/2019-08-01/subscriptionDeploymentTemplate.json#",
+ "contentVersion": "1.0.0.0",
+ "parameters": {
+  "mspOfferName": {
+   "type": "string",
+   "metadata": {
+    "description": "Specify a unique name for your offer"
+   },
+   "defaultValue": "Softcat Sandbox - Managed Sentinel Offer"
+  },
+  "mspOfferDescription": {
+   "type": "string",
+   "metadata": {
+    "description": "Name of the Managed Service Provider offering"
+   },
+   "defaultValue": "Provides permissions from groups in the Softcat Sandbox Partner account access to customer environments for the Managed Sentinel Service"
+  }
+ },
+ "variables": {
+  "mspRegistrationName": "[guid(parameters('mspOfferName'))]",
+  "mspAssignmentName": "[guid(parameters('mspOfferName'))]",
+  "managedByTenantId": "bb72df59-578e-4129-894d-9e70545ca670",
+  "authorizations": [
+   {
+    "principalId": "3888ac98-feed-4d4d-a227-b650e354e6fc",
+    "roleDefinitionId": "ab8e14d6-4a74-4a29-9ba8-549422addade",
+    "principalIdDisplayName": "Managed Azure - SIEM Contributors"
+   },
+   {
+    "principalId": "3888ac98-feed-4d4d-a227-b650e354e6fc",
+    "roleDefinitionId": "73c42c96-874c-492b-b04d-ab87d138a893",
+    "principalIdDisplayName": "Managed Azure - SIEM Contributors"
+   }
+  ]
+ },
+ "resources": [
+  {
+   "type": "Microsoft.ManagedServices/registrationDefinitions",
+   "apiVersion": "2020-02-01-preview",
+   "name": "[variables('mspRegistrationName')]",
+   "properties": {
+    "registrationDefinitionName": "[parameters('mspOfferName')]",
+    "description": "[parameters('mspOfferDescription')]",
+    "managedByTenantId": "[variables('managedByTenantId')]",
+    "authorizations": "[variables('authorizations')]"
+   }
+  },
+  {
+   "type": "Microsoft.ManagedServices/registrationAssignments",
+   "apiVersion": "2020-02-01-preview",
+   "name": "[variables('mspAssignmentName')]",
+   "dependsOn": [
+    "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
+   ],
+   "properties": {
+    "registrationDefinitionId": "[resourceId('Microsoft.ManagedServices/registrationDefinitions/', variables('mspRegistrationName'))]"
+   }
+  }
+ ],
+ "outputs": {
+  "mspOfferName": {
+   "type": "string",
+   "value": "[concat('Managed by', ' ', parameters('mspOfferName'))]"
+  },
+  "authorizations": {
+   "type": "array",
+   "value": "[variables('authorizations')]"
+  }
+ }
+}
