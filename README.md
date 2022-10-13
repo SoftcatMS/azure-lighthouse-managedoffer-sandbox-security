@@ -7,6 +7,8 @@ The following permissions are included in this lighthouse offer.
 
 | User/Group | Delegated Permission |
 | ---------- | -------------------- |
+| Managed Azure - SIEM Contributors | Microsoft Sentinel Contributor |
+| Managed Azure - SIEM Contributors | Log Analytics Reader |
 
 # Deploy to Azure 
 
